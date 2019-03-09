@@ -1,0 +1,65 @@
+<?php
+include_once "db.php";
+
+if (isset($_GET["submit"]) && isset($_GET["search"])) {
+    @$button = $_GET["submit"];
+    $search = $_GET["search"];
+}
+if (!@$button) {
+    echo "you didnt submit a keyword";
+}else{
+    if (strlen($search) <= 1) {
+        echo "Search term too short";
+    }else{
+        $search_exploded = explode(" ",$search);
+        $x = 0;
+        $construct = " ";
+        foreach ($search_exploded as $search_each) {
+            $x++;
+            if ($x == 1) {
+                $construct .= "title LIKE '%$search_each%'";
+            }else{
+                $construct .= "and title like '%$search_each%'";
+            }
+            $construct = "select * from products where $construct";
+            $run = $con->query($construct);
+            $foundNum = $run->num_rows;
+            if ($foundNum == 0) {
+                echo "Sorry, there are no matching result for <b></b>. </br> </br> 
+";
+            }else{
+                echo "$foundNum results found";
+                while ($row = $run->fetch_assoc()) {
+                    $title = $row["title"];
+                    $desc = $row["description"];
+                    echo "<a> <b> $title </b> </a> <br> $desc <br></a>";
+                }
+            }
+        }
+    }
+}
+
+
+?>
+<html lang="en">
+<head>
+<title>Search Algo</title>
+</head>
+<body>
+
+<form action = 'aaa.php' method = 'GET' >
+<center>
+<h1> New Search Algo </h1>
+<input type = 'text' size='90' name = 'search'>
+<br>
+<br>
+<input type = 'submit' name = 'submit' value = 'Test new algo'>
+    <select name="soniso">
+<option> 10 </option>
+<option> 20 </option>
+<option> 50 </option>
+    </select>
+</center>
+</form>
+</body>
+</html>
